@@ -1,0 +1,5 @@
+/vendor
+/.vscode
+*.lock
+*.cache
+/tmp-config
