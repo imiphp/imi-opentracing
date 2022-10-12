@@ -21,5 +21,6 @@ class AppRunListener implements IEventListener
     public function handle(EventParam $e): void
     {
         App::getBean('DbTracer');
+        App::getBean('RedisTracer');
     }
 }

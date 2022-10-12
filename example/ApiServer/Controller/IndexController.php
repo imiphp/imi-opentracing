@@ -10,6 +10,7 @@ use Imi\Controller\HttpController;
 use Imi\Db\Db;
 use Imi\OpenTracing\Facade\Tracer;
 use Imi\OpenTracing\Util\TracerUtil;
+use Imi\Redis\Redis;
 use Imi\Server\Http\Route\Annotation\Action;
 use Imi\Server\Http\Route\Annotation\Controller;
 use Imi\Server\Http\Route\Annotation\Route;
@@ -112,5 +113,19 @@ class IndexController extends HttpController
 
         $stmt = $db->prepare('select ?');
         $stmt->execute([1]);
+    }
+
+    /**
+     * @Action
+     *
+     * @return mixed
+     */
+    public function redis()
+    {
+        Redis::set('imi:opentracing:test', 'a');
+
+        return [
+            'result' => Redis::get('imi:opentracing:test'),
+        ];
     }
 }

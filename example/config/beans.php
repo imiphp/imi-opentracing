@@ -46,4 +46,7 @@ return [
     'DbTracer' => [
         'enable' => true,
     ],
+    'RedisTracer' => [
+        'enable' => true,
+    ],
 ];
