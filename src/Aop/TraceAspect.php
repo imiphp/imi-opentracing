@@ -15,6 +15,7 @@ use Imi\OpenTracing\Annotation\Tag;
 use Imi\OpenTracing\Annotation\Trace;
 use Imi\OpenTracing\Facade\Tracer;
 use Imi\OpenTracing\Util\SpanUtil;
+use Imi\OpenTracing\Util\TracerUtil;
 use Imi\Util\ObjectArrayHelper;
 
 /**
@@ -76,7 +77,7 @@ class TraceAspect
                 $span->setTag($tagAnnotation->key, $value);
             }
             $span->finish();
-            $tracer->flush();
+            TracerUtil::flush($tracer);
         }
     }
 }

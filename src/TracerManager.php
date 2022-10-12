@@ -34,11 +34,6 @@ class TracerManager
         return $this->options;
     }
 
-    public function getEnableDb(): bool
-    {
-        return $this->enableDb;
-    }
-
     public function getTracer(?string $serviceName = null): OpenTracingTracer
     {
         $serviceName ??= ($this->options['serviceName'] ?? 'imi');
@@ -56,6 +51,7 @@ class TracerManager
             {
                 throw new \InvalidArgumentException('Config @app.beans.Tracer.driver cannot be empty');
             }
+            // @phpstan-ignore-next-line
             $this->driverInstance = App::getBean($this->driver);
         }
 

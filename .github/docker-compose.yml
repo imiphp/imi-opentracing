@@ -1,0 +1,56 @@
+version: "3"
+services:
+  mysql:
+    container_name: "mysql"
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: "mysql"
+      TZ: "Asia/Shanghai"
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h127.0.0.1", "-proot" ]
+      interval: 3s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+  redis:
+    image: redis:6-alpine
+    container_name: redis
+    command: redis-server /etc/redis.conf
+    volumes:
+      - ./redis.conf:/etc/redis.conf
+    ports:
+      - 6379:6379
+  jaeger:
+    image: jaegertracing/all-in-one:${JAEGER_VERSION}
+    container_name: jaeger
+    ports:
+      - "6831:6831"
+      - "6832:6832"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "9411:9411"
+  swoole:
+    container_name: "swoole"
+    depends_on:
+      - mysql
+      - redis
+      - jaeger
+    environment:
+      IMI_JAEGER_HOST: ${IMI_JAEGER_HOST}
+      MYSQL_SERVER_HOST: ${MYSQL_SERVER_HOST}
+      REDIS_SERVER_HOST: ${REDIS_SERVER_HOST}
+    build:
+      context: .
+      dockerfile: swoole.dockerfile
+      args:
+        SWOOLE_DOCKER_VERSION: ${SWOOLE_DOCKER_VERSION}
+    volumes:
+      - "${GITHUB_WORKSPACE}:/imi:rw"
+    working_dir: /imi
+    command: tail -f /dev/null

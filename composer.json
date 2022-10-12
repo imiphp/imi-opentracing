@@ -2,8 +2,7 @@
     "name": "imiphp/imi-opentracing",
     "type": "library",
     "license": "MulanPSL-2.0",
-    "description": "imi 框架 Nacos 组件。imi Nacos component.",
-    "require": {},
+    "description": "imi 框架 OpenTracing 组件。imi OpenTracing component.",
     "require-dev": {
         "jonahgeorge/jaeger-client-php": "^1.4",
         "friendsofphp/php-cs-fixer": "~3.4.0",
@@ -15,7 +14,8 @@
         "imiphp/imi-workerman": "2.1.x-dev",
         "imiphp/imi-fpm": "2.1.x-dev",
         "imiphp/imi-service": "2.1.x-dev",
-        "swoole/ide-helper": "^4.8"
+        "swoole/ide-helper": "^4.8",
+        "yurunsoft/yurun-http": "^4.3"
     },
     "autoload": {
         "psr-4": {

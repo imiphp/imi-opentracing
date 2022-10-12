@@ -1,0 +1,29 @@
+name: Rector
+
+on: [push, pull_request]
+
+jobs:
+  tests:
+    runs-on: ubuntu-20.04
+    env:
+      SWOOLE_DOCKER_VERSION: 4.8-php8.0
+      JAEGER_VERSION: "1.38"
+      IMI_JAEGER_HOST: jaeger
+      MYSQL_SERVER_HOST: mysql
+      REDIS_SERVER_HOST: redis
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Prepare
+        run: |
+          docker-compose -f ./.github/docker-compose.yml up -d swoole
+          docker exec swoole php -v
+          docker exec swoole php -m
+          docker exec swoole php --ri swoole
+          docker exec swoole composer -V
+          docker exec swoole composer update --no-interaction --prefer-dist --no-progress
+
+      - name: Analyse
+        run: |
+          docker exec swoole ./vendor/bin/rector process --dry-run

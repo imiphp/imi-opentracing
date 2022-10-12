@@ -15,8 +15,8 @@ class SpanUtil
     }
 
     /**
-     * @param array|\Throwable            $fields
-     * @param int|float|DateTimeInterface $timestamp
+     * @param array|\Throwable             $fields
+     * @param int|float|\DateTimeInterface $timestamp
      */
     public static function log(Span $span, $fields, $timestamp = null): void
     {

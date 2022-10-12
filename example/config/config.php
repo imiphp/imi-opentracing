@@ -97,7 +97,7 @@ return [
                 'port'        => env('MYSQL_SERVER_PORT', 3306),
                 'username'    => env('MYSQL_SERVER_USERNAME', 'root'),
                 'password'    => env('MYSQL_SERVER_PASSWORD', 'root'),
-                'database'    => 'db_imi_test',
+                'database'    => 'mysql',
                 'charset'     => 'utf8mb4',
                 'initSqls'    => [
                     'SET @__pool_name="maindb"',
@@ -130,7 +130,7 @@ return [
                 'port'     => env('MYSQL_SERVER_PORT', 3306),
                 'username' => env('MYSQL_SERVER_USERNAME', 'root'),
                 'password' => env('MYSQL_SERVER_PASSWORD', 'root'),
-                'database' => 'db_imi_test',
+                'database' => 'mysql',
                 'charset'  => 'utf8mb4',
             ],
         ],

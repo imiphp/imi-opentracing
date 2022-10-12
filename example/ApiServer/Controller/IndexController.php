@@ -72,6 +72,9 @@ class IndexController extends HttpController
     /**
      * @Action
      *
+     * @param int|float $a
+     * @param int|float $b
+     *
      * @return mixed
      */
     public function add($a, $b)
@@ -127,5 +130,15 @@ class IndexController extends HttpController
         return [
             'result' => Redis::get('imi:opentracing:test'),
         ];
+    }
+
+    /**
+     * @Action
+     *
+     * @return mixed
+     */
+    public function common()
+    {
+        $this->testService->common();
     }
 }

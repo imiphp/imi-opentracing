@@ -77,7 +77,7 @@ class RedisTracer
                 $span->finish();
                 if ($isNew)
                 {
-                    $tracer->flush();
+                    TracerUtil::flush($tracer);
                 }
             }
         }

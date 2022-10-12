@@ -1,0 +1,50 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+  ci:
+    name: Linux Swoole-${{ matrix.swoole }} Jaeger-${{ matrix.jaeger }}
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        swoole: [5.0-php8.1, 5.0-php8.0, 4.8-php8.1, 4.8-php8.0, 4.8-php7.4]
+        jaeger: ["1.38"]
+    env:
+      SWOOLE_DOCKER_VERSION: ${{ matrix.swoole }}
+      JAEGER_VERSION: ${{ matrix.jaeger }}
+      IMI_JAEGER_HOST: jaeger
+      MYSQL_SERVER_HOST: mysql
+      REDIS_SERVER_HOST: redis
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Prepare
+        run: |
+          docker-compose -f ./.github/docker-compose.yml up -d
+          docker ps
+          docker exec swoole php -v
+          docker exec swoole php -m
+          docker exec swoole php --ri swoole
+          docker exec swoole composer -V
+          docker exec swoole composer update --no-interaction --prefer-dist --no-progress
+      - name: Wait for container
+        uses: stringbean/docker-healthcheck-action@v1
+        with:
+          container: mysql
+          wait-time: 120
+          require-status: running
+          require-healthy: true
+      - name: Init MySQL
+        run: |
+          docker exec mysql mysql -uroot -proot -e "ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'root';flush privileges;"
+      - name: Test
+        run: docker exec swoole composer test
+      - name: Print logs
+        if: failure()
+        run: |
+          cat example/.runtime/logs/*.log || echo ''
+          docker logs mysql
+          docker logs redis
+          docker logs jaeger

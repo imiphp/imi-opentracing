@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use function Imi\env;
+
 $rootPath = \dirname(__DIR__) . '/';
 
 return [
@@ -36,7 +38,7 @@ return [
                     'param' => true,
                 ],
                 'local_agent' => [
-                    'reporting_host' => '127.0.0.1',
+                    'reporting_host' => env('IMI_JAEGER_HOST', '127.0.0.1'),
                     'reporting_port' => 14268,
                 ],
                 'dispatch_mode' => \Jaeger\Config::JAEGER_OVER_BINARY_HTTP,

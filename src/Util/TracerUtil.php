@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Imi\OpenTracing\Util;
 
 use Imi\OpenTracing\Facade\Tracer;
+use Imi\Util\Imi;
 use OpenTracing\Scope;
 use OpenTracing\Span;
 use OpenTracing\SpanContext;
@@ -42,6 +43,18 @@ class TracerUtil
         else
         {
             $options = $options->withParent($parent);
+        }
+    }
+
+    public static function flush(\OpenTracing\Tracer $tracer): void
+    {
+        if (Imi::checkAppType('swoole'))
+        {
+            defer(static fn () => $tracer->flush());
+        }
+        else
+        {
+            $tracer->flush();
         }
     }
 }
