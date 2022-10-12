@@ -7,7 +7,9 @@ namespace app\ApiServer\Controller;
 use app\Service\TestService;
 use Imi\Aop\Annotation\Inject;
 use Imi\Controller\HttpController;
+use Imi\Db\Db;
 use Imi\OpenTracing\Facade\Tracer;
+use Imi\OpenTracing\Util\TracerUtil;
 use Imi\Server\Http\Route\Annotation\Action;
 use Imi\Server\Http\Route\Annotation\Controller;
 use Imi\Server\Http\Route\Annotation\Route;
@@ -35,11 +37,11 @@ class IndexController extends HttpController
         $this->response->getBody()->write('imi');
         $scope->close();
 
-        // startServiceActiveSpan
-        $tracer = Tracer::getTracer('backend1');
-        $scope1 = Tracer::startServiceActiveSpan('backend1', 'test1');
+        // startRootActiveSpan
+        $tracer = Tracer::createTracer('backend1');
+        $scope1 = TracerUtil::startRootActiveSpan($tracer, 'test1');
 
-        $scope2 = Tracer::startServiceActiveSpan('backend1', 'test1-1');
+        $scope2 = $tracer->startActiveSpan('test1-1');
         $scope2->close();
 
         $scope1->close();
@@ -48,8 +50,8 @@ class IndexController extends HttpController
         $span = Tracer::startSpan('write2');
         $span->finish();
 
-        // startServiceSpan
-        $span = Tracer::startServiceSpan('backend1', 'test2');
+        // backend1 test2
+        $span = $tracer->startSpan('test2');
         $span->finish();
         $tracer->flush();
 
@@ -96,5 +98,19 @@ class IndexController extends HttpController
     public function ignoredException()
     {
         $this->testService->ignoredException();
+    }
+
+    /**
+     * @Action
+     *
+     * @return mixed
+     */
+    public function db()
+    {
+        $db = Db::getInstance();
+        $db->query('select 123');
+
+        $stmt = $db->prepare('select ?');
+        $stmt->execute([1]);
     }
 }

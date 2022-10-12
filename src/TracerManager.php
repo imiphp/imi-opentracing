@@ -10,6 +10,7 @@ use Imi\OpenTracing\Contract\ITracerDriver;
 use Imi\RequestContext;
 use OpenTracing\Scope;
 use OpenTracing\Span;
+use OpenTracing\StartSpanOptions;
 use OpenTracing\Tracer as OpenTracingTracer;
 
 /**
@@ -21,7 +22,7 @@ class TracerManager
 
     protected array $options = [];
 
-    protected ?ITracerDriver $driverInstance = null;
+    private ?ITracerDriver $driverInstance = null;
 
     public function getDriver(): string
     {
@@ -31,6 +32,11 @@ class TracerManager
     public function getOptions(): array
     {
         return $this->options;
+    }
+
+    public function getEnableDb(): bool
+    {
+        return $this->enableDb;
     }
 
     public function getTracer(?string $serviceName = null): OpenTracingTracer
@@ -56,29 +62,19 @@ class TracerManager
         return $this->driverInstance->createTracer($serviceName ?? $this->options['serviceName'] ?? 'imi', $this->options['config'] ?? []);
     }
 
+    /**
+     * @param array|StartSpanOptions $options
+     */
     public function startActiveSpan(string $operationName, $options = []): Scope
     {
         return $this->getTracer()->startActiveSpan($operationName, $options);
     }
 
+    /**
+     * @param array|StartSpanOptions $options
+     */
     public function startSpan(string $operationName, $options = []): Span
     {
         return $this->getTracer()->startSpan($operationName, $options);
-    }
-
-    public function startServiceActiveSpan(?string $serviceName, string $operationName, $options = []): Scope
-    {
-        $tracer = $this->getTracer($serviceName);
-        if (!isset($options['child_of']) && !$tracer->getActiveSpan())
-        {
-            $options['child_of'] = self::getTracer()->getActiveSpan();
-        }
-
-        return $tracer->startActiveSpan($operationName, $options);
-    }
-
-    public function startServiceSpan(?string $serviceName, string $operationName, $options = []): Span
-    {
-        return $this->getTracer($serviceName)->startSpan($operationName, $options);
     }
 }

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use function Imi\env;
 use Imi\Util\Imi;
 
 return [
@@ -74,6 +75,78 @@ return [
         'beans' => Imi::checkAppType('workerman') ? [
             'ServerUtil' => 'ChannelServerUtil',
         ] : [],
+    ],
+
+    // 连接池配置
+    'pools'    => [
+        // 主数据库
+        'maindb'    => [
+            'pool'    => [
+                // 协程池类名
+                'class'    => \Imi\Db\Pool\SyncDbPool::class,
+                // 连接池配置
+                'config'        => [
+                    'maxResources'              => 10,
+                    'minResources'              => 1,
+                    'checkStateWhenGetResource' => false,
+                ],
+            ],
+            // 连接池资源配置
+            'resource'    => [
+                'host'        => env('MYSQL_SERVER_HOST', '127.0.0.1'),
+                'port'        => env('MYSQL_SERVER_PORT', 3306),
+                'username'    => env('MYSQL_SERVER_USERNAME', 'root'),
+                'password'    => env('MYSQL_SERVER_PASSWORD', 'root'),
+                'database'    => 'db_imi_test',
+                'charset'     => 'utf8mb4',
+                'initSqls'    => [
+                    'SET @__pool_name="maindb"',
+                ],
+            ],
+        ],
+        'redis'    => [
+            'pool'    => [
+                'class'        => \Imi\Redis\SyncRedisPool::class,
+                'config'       => [
+                    'maxResources'    => 10,
+                    'minResources'    => 1,
+                ],
+            ],
+            'resource'    => [
+                'host'      => env('REDIS_SERVER_HOST', '127.0.0.1'),
+                'port'      => env('REDIS_SERVER_PORT', 6379),
+                'password'  => env('REDIS_SERVER_PASSWORD'),
+            ],
+        ],
+    ],
+    // db 配置
+    'db' => [
+        // 默认连接池名
+        'defaultPool' => 'maindb',
+        'connections' => [
+            'tradition' => [
+                'dbClass'  => 'PdoMysqlDriver',
+                'host'     => env('MYSQL_SERVER_HOST', '127.0.0.1'),
+                'port'     => env('MYSQL_SERVER_PORT', 3306),
+                'username' => env('MYSQL_SERVER_USERNAME', 'root'),
+                'password' => env('MYSQL_SERVER_PASSWORD', 'root'),
+                'database' => 'db_imi_test',
+                'charset'  => 'utf8mb4',
+            ],
+        ],
+    ],
+    // redis 配置
+    'redis' => [
+        // 默认连接池名
+        'defaultPool'   => 'redis',
+        'connections'   => [
+            'tradition' => [
+                'host'        => env('REDIS_SERVER_HOST', '127.0.0.1'),
+                'port'        => env('REDIS_SERVER_PORT', 6379),
+                'password'    => env('REDIS_SERVER_PASSWORD'),
+                'serialize'   => false,
+            ],
+        ],
     ],
 
     // 日志配置

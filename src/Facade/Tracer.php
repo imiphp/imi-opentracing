@@ -12,11 +12,11 @@ use Imi\Facade\BaseFacade;
  *
  * @method static string getDriver()
  * @method static array getOptions()
+ * @method static bool getEnableDb()
  * @method static \OpenTracing\Tracer getTracer(?string $serviceName = NULL)
+ * @method static \OpenTracing\Tracer createTracer(?string $serviceName = NULL)
  * @method static \OpenTracing\Scope startActiveSpan(string $operationName, $options = [])
  * @method static \OpenTracing\Span startSpan(string $operationName, $options = [])
- * @method static \OpenTracing\Scope startServiceActiveSpan(?string $serviceName, string $operationName, $options = [])
- * @method static \OpenTracing\Span startServiceSpan(?string $serviceName, string $operationName, $options = [])
  */
 class Tracer extends BaseFacade
 {

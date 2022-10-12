@@ -88,6 +88,7 @@ namespace PHPSTORM_META {
         'ChannelServerUtil' => Imi\Workerman\Server\Util\ChannelServerUtil::class,
         'WorkermanWebSocketServer' => Imi\Workerman\Server\WebSocket\Server::class,
         'WorkermanWorkerHandler' => Imi\Workerman\Worker\WorkermanWorkerHandler::class,
+        'DbTracer' => Imi\OpenTracing\Aop\DbTracer::class,
         'Tracer' => Imi\OpenTracing\TracerManager::class,
 
     ]));
@@ -179,6 +180,7 @@ namespace PHPSTORM_META {
         'ChannelServerUtil' => Imi\Workerman\Server\Util\ChannelServerUtil::class,
         'WorkermanWebSocketServer' => Imi\Workerman\Server\WebSocket\Server::class,
         'WorkermanWorkerHandler' => Imi\Workerman\Worker\WorkermanWorkerHandler::class,
+        'DbTracer' => Imi\OpenTracing\Aop\DbTracer::class,
         'Tracer' => Imi\OpenTracing\TracerManager::class,
 
     ]));
@@ -270,6 +272,7 @@ namespace PHPSTORM_META {
         'ChannelServerUtil' => Imi\Workerman\Server\Util\ChannelServerUtil::class,
         'WorkermanWebSocketServer' => Imi\Workerman\Server\WebSocket\Server::class,
         'WorkermanWorkerHandler' => Imi\Workerman\Worker\WorkermanWorkerHandler::class,
+        'DbTracer' => Imi\OpenTracing\Aop\DbTracer::class,
         'Tracer' => Imi\OpenTracing\TracerManager::class,
 
     ]));
