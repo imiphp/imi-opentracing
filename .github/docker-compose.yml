@@ -35,14 +35,24 @@ services:
       - "16686:16686"
       - "14268:14268"
       - "9411:9411"
+  zipkin:
+    image: openzipkin/zipkin:${ZIPKIN_VERSION}
+    container_name: zipkin
+    environment:
+      - STORAGE_TYPE=mem
+    ports:
+      - 9412:9411
   swoole:
     container_name: "swoole"
     depends_on:
       - mysql
       - redis
       - jaeger
+      - zipkin
     environment:
       IMI_JAEGER_HOST: ${IMI_JAEGER_HOST}
+      IMI_ZIPKIN_HOST: ${IMI_ZIPKIN_HOST}
+      IMI_ZIPKIN_PORT: 9412
       MYSQL_SERVER_HOST: ${MYSQL_SERVER_HOST}
       REDIS_SERVER_HOST: ${REDIS_SERVER_HOST}
     build:

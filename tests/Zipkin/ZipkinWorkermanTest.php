@@ -6,7 +6,7 @@ namespace Imi\OpenTracing\Test\Jaeger;
 
 use Imi\OpenTracing\Test\TWorkermanTest;
 
-class JaegerWorkermanTest extends JaegerBaseTest
+class ZipkinWorkermanTest extends ZipkinBaseTest
 {
     use TWorkermanTest;
 }

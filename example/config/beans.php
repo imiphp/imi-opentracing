@@ -6,6 +6,46 @@ use function Imi\env;
 
 $rootPath = \dirname(__DIR__) . '/';
 
+switch (env('IMI_TRACER', 'jaeger'))
+{
+    case 'jaeger':
+        $tracer = [
+            'driver'  => \Imi\OpenTracing\Driver\JaegerTracerDriver::class,
+            'options' => [
+                'serviceName' => 'imi-opentracing',
+                'config'      => [
+                    'sampler' => [
+                        'type'  => Jaeger\SAMPLER_TYPE_CONST,
+                        'param' => true,
+                    ],
+                    'local_agent' => [
+                        'reporting_host' => env('IMI_JAEGER_HOST', '127.0.0.1'),
+                        'reporting_port' => 14268,
+                    ],
+                    'dispatch_mode' => \Jaeger\Config::JAEGER_OVER_BINARY_HTTP,
+                ],
+            ],
+        ];
+        break;
+    case 'zipkin':
+        $tracer = [
+            'driver'  => \Imi\OpenTracing\Driver\ZipkinTracerDriver::class,
+            'options' => [
+                'serviceName' => 'imi-opentracing',
+                'config'      => [
+                    'sampler' => [
+                        'creator'       => '\Zipkin\Samplers\BinarySampler::createAsAlwaysSample',
+                        'creatorParams' => [true],
+                    ],
+                    'reporter' => [
+                        'endpoint_url'   => sprintf('http://%s:%d/api/v2/spans', env('IMI_ZIPKIN_HOST', '127.0.0.1'), env('IMI_ZIPKIN_PORT', 9411)),
+                    ],
+                ],
+            ],
+        ];
+        break;
+}
+
 return [
     'hotUpdate'    => [
         'status'    => false, // 关闭热更新去除注释，不设置即为开启，建议生产环境关闭
@@ -28,23 +68,7 @@ return [
     'ErrorLog' => [
         'exceptionLevel' => \E_ERROR | \E_PARSE | \E_CORE_ERROR | \E_COMPILE_ERROR | \E_USER_ERROR | \E_RECOVERABLE_ERROR,
     ],
-    'Tracer' => [
-        'driver'  => \Imi\OpenTracing\Driver\JaegerTracerDriver::class,
-        'options' => [
-            'serviceName' => 'imi-opentracing',
-            'config'      => [
-                'sampler' => [
-                    'type'  => Jaeger\SAMPLER_TYPE_CONST,
-                    'param' => true,
-                ],
-                'local_agent' => [
-                    'reporting_host' => env('IMI_JAEGER_HOST', '127.0.0.1'),
-                    'reporting_port' => 14268,
-                ],
-                'dispatch_mode' => \Jaeger\Config::JAEGER_OVER_BINARY_HTTP,
-            ],
-        ],
-    ],
+    'Tracer'   => $tracer,
     'DbTracer' => [
         'enable' => true,
     ],

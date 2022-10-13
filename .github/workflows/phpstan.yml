@@ -8,9 +8,7 @@ jobs:
     env:
       SWOOLE_DOCKER_VERSION: 4.8-php8.0
       JAEGER_VERSION: "1.38"
-      IMI_JAEGER_HOST: jaeger
-      MYSQL_SERVER_HOST: mysql
-      REDIS_SERVER_HOST: redis
+      ZIPKIN_VERSION: "2.23"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
